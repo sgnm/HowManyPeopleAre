@@ -75,6 +75,6 @@ public:
     
     int miniradius;
     
-    ofSoundPlayer bgm;
+    ofSoundPlayer bgm, pi, zoomIn, zoomOut, rotSound;
     
 };

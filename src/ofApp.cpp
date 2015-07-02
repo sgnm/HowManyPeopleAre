@@ -46,7 +46,7 @@ void ofApp::setup(){
     rollCam.setCamSpeed(0.1);//rollCam's speed set;
     light.setup();
     ofEnableLighting(); //Lightが使えてかっこいいけど見にくいリリースの時だけ実行する
-    light.setPosition(0, -300, 0);
+    light.setPosition(0, 300, 0);
     light.draw();
     light.enable();
     
@@ -54,6 +54,11 @@ void ofApp::setup(){
     
     bgm.loadSound("bgm.mp3");
     bgm.play();
+    
+    pi.loadSound("pi.mp3");
+    zoomIn.loadSound("zoomIn.mp3");
+    zoomOut.loadSound("zoomOut.mp3");
+    rotSound.loadSound("rotate.mp3");
     
 }
 
@@ -107,7 +112,7 @@ void ofApp::draw(){
     rollCam.begin(); //rollCam begin
     
     ofPushMatrix();
-    ofRotateX(90);
+    ofRotateX(-90);
     ofRotateZ(ofGetElapsedTimef()*5);
     mesh.draw();
     ofPopMatrix();
@@ -128,6 +133,10 @@ void ofApp::draw(){
         
         City city = {country, lat, lon, text, user_name};
         cities.push_back( city );
+        if(ofGetElapsedTimef() > 25.0f){
+            pi.setVolume(0.1f);
+            pi.play();
+        }
     }
     
     ofSetColor(255);
@@ -174,14 +183,19 @@ void ofApp::keyPressed(int key){
         cam.lookAt(ofVec3f(0, 0, 0));
         rollCam.setScale(1);
         rollCam.setRandomPos(270);
+        rotSound.setVolume(0.3f);
+        rotSound.play();
     }
     if (key == '3') {//Inputting optional rotate.
         rollCam.setPos(0, 0, 0);
         cam.lookAt(worldPoint);
         rollCam.setScale(1);
+        pi.setVolume(0.5f);
+        pi.play();
     }
     if (key == '4'){
         rollCam.setScale(2);
+        zoomIn.play();
     }
     if (key == '5'){
         rollCam.setScale(1.5);
@@ -189,6 +203,7 @@ void ofApp::keyPressed(int key){
     if (key == '6') {
         rollCam.setScale(1);
         cam.lookAt(ofVec3f(0, 0, 0));
+        zoomOut.play();
     }
     if (key == 'f'){
         ofToggleFullscreen();
