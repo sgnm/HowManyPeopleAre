@@ -62,6 +62,7 @@ public:
     string user_name;
     string imgUrl;
     ofImage userPic;
+    float lat, lon;
 
     ofxRollingCam rollCam;
     ofLight light;
@@ -73,5 +74,7 @@ public:
     string str, oldStr, newStr;
     
     int miniradius;
+    
+    ofSoundPlayer bgm;
     
 };
