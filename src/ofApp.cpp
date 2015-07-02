@@ -6,7 +6,7 @@ void ofApp::setup(){
     ofEnableSmoothing();
     ofEnableDepthTest();
     ofEnableAlphaBlending();
-    //    ofEnableBlendMode(OF_BLENDMODE_ADD); //加算合成すると北極と南極が明るすぎるので無い方が綺麗
+    ofEnableBlendMode(OF_BLENDMODE_ADD); //加算合成すると北極と南極が明るすぎるので無い方が綺麗
     
     image.loadImage("world.png");
     image.resize(200, 100);
@@ -19,7 +19,7 @@ void ofApp::setup(){
     
     mesh.setMode(OF_PRIMITIVE_POINTS);
     mesh.enableColors();
-    glPointSize(1.5);
+    glPointSize(3);
     glEnable(GL_DEPTH_TEST);
     
     for(int x = 0; x < w; x+=1){
@@ -44,13 +44,18 @@ void ofApp::setup(){
     
     rollCam.setup();//rollCam's setup.
     rollCam.setCamSpeed(0.1);//rollCam's speed set;
+    light.setup();
+//    ofEnableLighting(); //Lightが使えてかっこいいけど見にくいリリースの時だけ実行する
+    light.setPosition(0, -300, 0);
+//    light.draw();
+//    light.enable();
+    
+    cam.setPosition(0, 0, 400);
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     mesh.clearVertices();
-    //    ofRotateY(rotate);
-    rotate += 1;
     
     // jsonデータ取得
     response.open("/Users/Shin/Desktop/stream.json");
@@ -61,8 +66,6 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    
-    rollCam.begin(); //rollCam begin
     
     float radius = 200;
     
@@ -85,63 +88,80 @@ void ofApp::draw(){
             }
         }
     }
-    
+    cam.begin();
     // 向きの調整&回転させてる
+    rollCam.begin(); //rollCam begin
+    
+    ofPushMatrix();
     ofRotateX(90);
     ofRotateZ(ofGetElapsedTimef()*5);
     mesh.draw();
+    ofPopMatrix();
+    
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 0), 20, 20);
     
     // ツイートの位置情報取得
         float lon = response["place"]["bounding_box"]["coordinates"][0][0][0].asFloat();
         float lat = response["place"]["bounding_box"]["coordinates"][0][0][1].asFloat();
-//        cout << ofToString(lon, 12) + " " + ofToString(lat, 12) << endl;
         // 国とテキスト、user_nameとimage取得
         country = response["place"]["full_name"].asString();
         text = response["text"].asString();
         user_name = response["user"]["name"].asString();
         imgUrl = response["user"]["profile_image_url"].asString();
-        //        userPic.loadImage(imgUrl);
-    
-    //    City newyork = { "new york", 40+47/60., -73 + 58/60. };
+//        if (numloadpic < 1) {
+//            userPic.loadImage(imgUrl);
+//            numloadpic++;
+//        }
     
     ofSetColor(255);
     for(unsigned int i = 0; i < cities.size(); i++){
         
-        ofQuaternion latRot, longRot, spinQuat;
         latRot.makeRotate(cities[i].latitude, 1, 0, 0);
         longRot.makeRotate(cities[i].longitude, 0, 1, 0);
         spinQuat.makeRotate(ofGetElapsedTimef(), 0, 1, 0);
         
         ofVec3f center = ofVec3f(0,0,radius);
         worldPoint = latRot * longRot * spinQuat * center;
-        cout << worldPoint.x << endl;
         
+        ofDrawSphere(worldPoint, 5);
         ofLine(ofVec3f(0,0,0), worldPoint);
         
-        //        userPic.draw(worldPoint, userPic.width, userPic.height);
-        //        ofDrawBitmapString(country, worldPoint + 10);
-        ofDrawBitmapString(user_name, worldPoint + 50);
-        //        ofDrawBitmapString(text, worldPoint + 100);
-        //        ofDrawBitmapString(country, worldPoint + 150);
+        userPic.draw(worldPoint * 1.2, userPic.width, userPic.height);
+        ofDrawBitmapString(user_name, worldPoint * 1.2);
+        ofDrawBitmapString(text, worldPoint * 1.2);
+        ofDrawBitmapString(country, worldPoint * 1.2);
     }
     
     rollCam.end();  //rollCam end
+    cam.end();
     
+//    
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    if (key=='1') {//Inputting optional rotate.
+    if (key == '1') {//Inputting optional rotate.
         rollCam.setPos(0, 0, 0);
     }
-    if (key=='2') {//Random rotate.
+    if (key == '2') {//Random rotate.
+        cam.lookAt(ofVec3f(0, 0, 0));
         rollCam.setScale(1);
         rollCam.setRandomPos(270);
     }
-    if (key=='3') {//Inputting optional rotate.
+    if (key == '3') {//Inputting optional rotate.
+        rollCam.setPos(0, 0, 0);
+        cam.lookAt(worldPoint);
         rollCam.setScale(2);
-        rollCam.setPos(worldPoint.x,worldPoint.y, worldPoint.z);
+    }
+    if (key == '4'){
+        rollCam.setScale(2);
+    }
+    if (key == '5'){
+        rollCam.setScale(1);
+    }
+    if (key == '6') {
+        rollCam.setScale(1);
+        cam.lookAt(ofVec3f(0, 0, 0));
     }
     if (key == 'f'){
         ofToggleFullscreen();

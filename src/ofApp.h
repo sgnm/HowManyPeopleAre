@@ -35,6 +35,7 @@ public:
     ofVec3f center;
     ofVec3f worldPoint;
     ofxJSONElement response;
+    int numloadpic = 0;
     
     int threshold;
     float rad = 0.0;
@@ -58,8 +59,10 @@ public:
     ofImage userPic;
 
     ofxRollingCam rollCam;
-    ofLight lig;
-    vector <ofVec3f> pos;
-    bool hide;
+    ofLight light;
+    
+    ofCamera cam;
+    
+    ofQuaternion latRot, longRot, spinQuat;
     
 };
