@@ -1,4 +1,7 @@
 #include "ofApp.h"
+#include <fstream>
+#include <iostream>
+#include <string>
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -37,8 +40,8 @@ void ofApp::setup(){
         }
     }
     
-   	City tokyo = { "tokyo", 35 + 40./60, 139 + 45/60. };
-   	cities.push_back( tokyo );
+//   	City tokyo = { "tokyo", 35 + 40./60, 139 + 45/60. };
+//   	cities.push_back( tokyo );
     
     userPic.allocate(100, 100, OF_IMAGE_COLOR);
     
@@ -51,6 +54,8 @@ void ofApp::setup(){
 //    light.enable();
     
     cam.setPosition(0, 0, 400);
+    
+
 }
 
 //--------------------------------------------------------------
@@ -62,6 +67,16 @@ void ofApp::update(){
     response.getRawString();
     
     rollCam.update();   //rollCam's rotate update.
+    
+    oldStr = newStr;
+    ifstream ifs("/Users/Shin/Desktop/stream.json");
+    while (getline(ifs, str))
+    {
+        //        cout << str << endl;
+        newStr = str;
+    }
+//    cout << str.length() << endl;
+//    cout << newStr.length() << endl;
 }
 
 //--------------------------------------------------------------
@@ -101,17 +116,21 @@ void ofApp::draw(){
     ofDrawBitmapString(ofToString(ofGetFrameRate(), 0), 20, 20);
     
     // ツイートの位置情報取得
+    if (newStr.length() != oldStr.length()) { //違うらしい。つまりnewStrをstrにそのままいれたとしても、なぜか違うものとして扱われるらしい。
+        cout << oldStr.length() << endl;
         float lon = response["place"]["bounding_box"]["coordinates"][0][0][0].asFloat();
         float lat = response["place"]["bounding_box"]["coordinates"][0][0][1].asFloat();
+        
         // 国とテキスト、user_nameとimage取得
         country = response["place"]["full_name"].asString();
         text = response["text"].asString();
         user_name = response["user"]["name"].asString();
         imgUrl = response["user"]["profile_image_url"].asString();
-//        if (numloadpic < 1) {
-//            userPic.loadImage(imgUrl);
-//            numloadpic++;
-//        }
+        userPic.loadImage(imgUrl);
+        
+        City tokyo = { country, lat, lon };
+        cities.push_back( tokyo );
+    }
     
     ofSetColor(255);
     for(unsigned int i = 0; i < cities.size(); i++){
@@ -128,9 +147,9 @@ void ofApp::draw(){
         
         userPic.draw(worldPoint * 1.2, userPic.width, userPic.height);
         ofDrawBitmapString(user_name, worldPoint * 1.2);
-        ofDrawBitmapString(text, worldPoint * 1.2);
-        ofDrawBitmapString(country, worldPoint * 1.2);
-    }
+        ofDrawBitmapString(text, worldPoint * 1.4);
+        ofDrawBitmapString(country, worldPoint * 1.6);
+        }
     
     rollCam.end();  //rollCam end
     cam.end();
@@ -151,7 +170,7 @@ void ofApp::keyPressed(int key){
     if (key == '3') {//Inputting optional rotate.
         rollCam.setPos(0, 0, 0);
         cam.lookAt(worldPoint);
-        rollCam.setScale(2);
+        rollCam.setScale(1);
     }
     if (key == '4'){
         rollCam.setScale(2);

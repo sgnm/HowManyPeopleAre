@@ -65,4 +65,6 @@ public:
     
     ofQuaternion latRot, longRot, spinQuat;
     
+    string str, oldStr, newStr;
+    
 };
