@@ -40,9 +40,6 @@ void ofApp::setup(){
         }
     }
     
-//   	City tokyo = { "tokyo", 35 + 40./60, 139 + 45/60. };
-//   	cities.push_back( tokyo );
-    
     userPic.allocate(100, 100, OF_IMAGE_COLOR);
     
     rollCam.setup();//rollCam's setup.
@@ -142,7 +139,11 @@ void ofApp::draw(){
         ofVec3f center = ofVec3f(0,0,radius);
         worldPoint = latRot * longRot * spinQuat * center;
         
-        ofDrawSphere(worldPoint, 5);
+        miniradius = ofRandom(0, 10);
+        ofPushStyle();
+        ofSetColor(255, ofRandom(0, 255));
+        ofDrawSphere(worldPoint, miniradius);
+        ofPopStyle();
         ofLine(ofVec3f(0,0,0), worldPoint);
         
 //        userPic.draw(worldPoint * 1.2, userPic.width, userPic.height);

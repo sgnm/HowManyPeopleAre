@@ -4,14 +4,6 @@
 #include "ofxJSON.h"
 #include "ofxRollingCam.h"
 
-//typedef struct {
-//    string name;
-//    float latitude;
-//    float longitude;
-//    string text;
-//    string user_name;
-//} City;
-
 class City{
 
 public:
@@ -79,5 +71,7 @@ public:
     ofQuaternion latRot, longRot, spinQuat;
     
     string str, oldStr, newStr;
+    
+    int miniradius;
     
 };
