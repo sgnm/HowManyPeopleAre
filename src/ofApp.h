@@ -4,11 +4,24 @@
 #include "ofxJSON.h"
 #include "ofxRollingCam.h"
 
-typedef struct {
-    string name;
+//typedef struct {
+//    string name;
+//    float latitude;
+//    float longitude;
+//    string text;
+//    string user_name;
+//} City;
+
+class City{
+
+public:
+    string country;
     float latitude;
     float longitude;
-} City;
+    string text;
+    string user_name;
+    
+};
 
 class ofApp : public ofBaseApp{
     

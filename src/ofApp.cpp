@@ -126,10 +126,10 @@ void ofApp::draw(){
         text = response["text"].asString();
         user_name = response["user"]["name"].asString();
         imgUrl = response["user"]["profile_image_url"].asString();
-        userPic.loadImage(imgUrl);
+//        userPic.loadImage(imgUrl);
         
-        City tokyo = { country, lat, lon };
-        cities.push_back( tokyo );
+        City city = {country, lat, lon, text, user_name};
+        cities.push_back( city );
     }
     
     ofSetColor(255);
@@ -145,10 +145,10 @@ void ofApp::draw(){
         ofDrawSphere(worldPoint, 5);
         ofLine(ofVec3f(0,0,0), worldPoint);
         
-        userPic.draw(worldPoint * 1.2, userPic.width, userPic.height);
-        ofDrawBitmapString(user_name, worldPoint * 1.2);
-        ofDrawBitmapString(text, worldPoint * 1.4);
-        ofDrawBitmapString(country, worldPoint * 1.6);
+//        userPic.draw(worldPoint * 1.2, userPic.width, userPic.height);
+        ofDrawBitmapString(cities[i].user_name, worldPoint * 1.2);
+        ofDrawBitmapString(cities[i].text, worldPoint * 1.2 - 20);
+        ofDrawBitmapString(cities[i].country, worldPoint * 1.2 - 40);
         }
     
     rollCam.end();  //rollCam end
