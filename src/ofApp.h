@@ -61,7 +61,8 @@ public:
     string text;
     string user_name;
     string imgUrl;
-    ofImage userPic;
+    vector<ofImage> userPic;
+    int k = 0;
     float lat, lon;
 
     ofxRollingCam rollCam;

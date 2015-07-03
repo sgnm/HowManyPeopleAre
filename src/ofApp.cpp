@@ -40,8 +40,6 @@ void ofApp::setup(){
         }
     }
     
-    userPic.allocate(100, 100, OF_IMAGE_COLOR);
-    
     rollCam.setup();//rollCam's setup.
     rollCam.setCamSpeed(0.1);//rollCam's speed set;
     light.setup();
@@ -117,7 +115,7 @@ void ofApp::draw(){
     mesh.draw();
     ofPopMatrix();
     
-    ofDrawBitmapString(ofToString(ofGetFrameRate(), 0), 20, 20);
+//    ofDrawBitmapString(ofToString(ofGetFrameRate(), 0), 20, 20);
     
     // ツイートの位置情報取得
     if (newStr.length() != oldStr.length()) {
@@ -129,11 +127,14 @@ void ofApp::draw(){
         text = response["text"].asString();
         user_name = response["user"]["name"].asString();
         imgUrl = response["user"]["profile_image_url"].asString();
-//        userPic.loadImage(imgUrl);
+//        userPic[k].loadImage(imgUrl);
+        userPic.push_back(ofImage(imgUrl));
         
+//        userPic[k].allocate(100, 100, OF_IMAGE_COLOR);
+
         City city = {country, lat, lon, text, user_name};
         cities.push_back( city );
-        if(ofGetElapsedTimef() > 25.0f){
+        if(ofGetElapsedTimef() > 30.0f){
             pi.setVolume(0.1f);
             pi.play();
         }
@@ -162,10 +163,14 @@ void ofApp::draw(){
             ofPopStyle();
             ofLine(ofVec3f(0,0,0), worldPoint);
             
-    //        userPic.draw(worldPoint * 1.2, userPic.width, userPic.height);
-            ofDrawBitmapString(cities[i].user_name, worldPoint * 1.2);
-            ofDrawBitmapString(cities[i].text, worldPoint * 1.2 - 20);
-            ofDrawBitmapString(cities[i].country, worldPoint * 1.2 - 40);
+
+            ofSetColor(255);
+            ofDrawBitmapString(cities[i].user_name, worldPoint * 1.2 + ofVec3f(20, 0, 0));
+            ofDrawBitmapString(cities[i].text, worldPoint + ofVec3f(20, -20, 0));
+//            ofDrawBitmapString(cities[i].country, worldPoint );
+        // drawしたときに球体の右半分は良いけど、左半分のときに、画像のwidth分引いてあげないとちゃんとひょうじされない。
+        // つまに緯度経度によって
+            userPic[i].draw(worldPoint.x, worldPoint.y, worldPoint.z, userPic[i].width, userPic[i].height);
         }
     }
     
@@ -195,6 +200,7 @@ void ofApp::keyPressed(int key){
     }
     if (key == '4'){
         rollCam.setScale(2);
+        zoomIn.setVolume(0.3f);
         zoomIn.play();
     }
     if (key == '5'){
@@ -203,6 +209,7 @@ void ofApp::keyPressed(int key){
     if (key == '6') {
         rollCam.setScale(1);
         cam.lookAt(ofVec3f(0, 0, 0));
+        zoomOut.setVolume(0.3f);
         zoomOut.play();
     }
     if (key == 'f'){
