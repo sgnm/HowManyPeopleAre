@@ -77,5 +77,6 @@ public:
     int miniradius;
     
     ofSoundPlayer bgm, pi, zoomIn, zoomOut, rotSound;
+    bool seven;
     
 };

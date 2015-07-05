@@ -5,6 +5,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    ofToggleFullscreen();
     ofBackground(0,0,0);
     ofEnableSmoothing();
     ofEnableDepthTest();
@@ -72,13 +73,9 @@ void ofApp::update(){
     
     oldStr = newStr;
     ifstream ifs("/Users/Shin/Desktop/stream.json");
-    while (getline(ifs, str))
-    {
-        //        cout << str << endl;
+    while (getline(ifs, str)){
         newStr = str;
     }
-//    cout << str.length() << endl;
-//    cout << newStr.length() << endl;
 }
 
 //--------------------------------------------------------------
@@ -129,8 +126,6 @@ void ofApp::draw(){
         imgUrl = response["user"]["profile_image_url"].asString();
 //        userPic[k].loadImage(imgUrl);
         userPic.push_back(ofImage(imgUrl));
-        
-//        userPic[k].allocate(100, 100, OF_IMAGE_COLOR);
 
         City city = {country, lat, lon, text, user_name};
         cities.push_back( city );
@@ -170,7 +165,7 @@ void ofApp::draw(){
 //            ofDrawBitmapString(cities[i].country, worldPoint );
         // drawしたときに球体の右半分は良いけど、左半分のときに、画像のwidth分引いてあげないとちゃんとひょうじされない。
         // つまに緯度経度によって
-            userPic[i].draw(worldPoint.x, worldPoint.y, worldPoint.z, userPic[i].width, userPic[i].height);
+            userPic[i].draw(worldPoint.x * 1.2, worldPoint.y * 1.2, worldPoint.z * 1.2, userPic[i].width, userPic[i].height);
         }
     }
     
@@ -209,8 +204,20 @@ void ofApp::keyPressed(int key){
     if (key == '6') {
         rollCam.setScale(1);
         cam.lookAt(ofVec3f(0, 0, 0));
+        if (seven) {
+            zoomIn.setVolume(0.3f);
+            zoomIn.play();
+            seven = false;
+        }else{
+            zoomOut.setVolume(0.3f);
+            zoomOut.play();
+        }
+    }
+    if (key == '7'){
+        rollCam.setScale(0.7);
         zoomOut.setVolume(0.3f);
         zoomOut.play();
+        seven = true;
     }
     if (key == 'f'){
         ofToggleFullscreen();
