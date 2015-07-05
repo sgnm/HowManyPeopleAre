@@ -10,7 +10,7 @@ void ofApp::setup(){
     ofEnableSmoothing();
     ofEnableDepthTest();
     ofEnableAlphaBlending();
-    ofEnableBlendMode(OF_BLENDMODE_ADD); //加算合成すると北極と南極が明るすぎるので無い方が綺麗
+    ofEnableBlendMode(OF_BLENDMODE_ADD); //加算合成すると北極と南極が明るすぎるので無い方が綺麗説
     
     image.loadImage("world.png");
     image.resize(200, 100);
@@ -54,6 +54,7 @@ void ofApp::setup(){
     bgm.loadSound("bgm.mp3");
     bgm.play();
     
+    // 効果音読み込み
     pi.loadSound("pi.mp3");
     zoomIn.loadSound("zoomIn.mp3");
     zoomOut.loadSound("zoomOut.mp3");
@@ -74,21 +75,19 @@ void ofApp::update(){
     oldStr = newStr;
     ifstream ifs("/Users/Shin/Desktop/stream.json");
     while (getline(ifs, str)){
+        // 次にdraw()が呼ばれたときに、oldStrとの差分を比較するため、読み込んだjsonをnewStrに格納
         newStr = str;
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    
-    float radius = 200;
-    
     for(int i = 0; i < 1; i++){
         for(int x = 0; x < w; x+=1){
             for(int y = 0; y < h; y+=1){
-                
                 ofPushMatrix();
                 
+                // xy座標を極座標変換してあげてる
                 ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
                 float theta = (float)y * M_PI / h;
                 float phi = -(float)x * 2.0f * M_PI / w;
@@ -102,6 +101,7 @@ void ofApp::draw(){
             }
         }
     }
+    
     cam.begin();
     // 向きの調整&回転させてる
     rollCam.begin(); //rollCam begin
@@ -114,7 +114,7 @@ void ofApp::draw(){
     
 //    ofDrawBitmapString(ofToString(ofGetFrameRate(), 0), 20, 20);
     
-    // ツイートの位置情報取得
+    // json内容比較して（更新されたら）、ツイートしたユーザの情報取得
     if (newStr.length() != oldStr.length()) {
         lon = response["place"]["bounding_box"]["coordinates"][0][0][0].asFloat();
         lat = response["place"]["bounding_box"]["coordinates"][0][0][1].asFloat();
@@ -124,11 +124,12 @@ void ofApp::draw(){
         text = response["text"].asString();
         user_name = response["user"]["name"].asString();
         imgUrl = response["user"]["profile_image_url"].asString();
-//        userPic[k].loadImage(imgUrl);
         userPic.push_back(ofImage(imgUrl));
 
         City city = {country, lat, lon, text, user_name};
         cities.push_back( city );
+        
+        // ツイートがあるたびに、音を鳴らす。30.0fは演出の為。
         if(ofGetElapsedTimef() > 30.0f){
             pi.setVolume(0.1f);
             pi.play();
@@ -158,13 +159,10 @@ void ofApp::draw(){
             ofPopStyle();
             ofLine(ofVec3f(0,0,0), worldPoint);
             
-
             ofSetColor(255);
             ofDrawBitmapString(cities[i].user_name, worldPoint * 1.2 + ofVec3f(20, 0, 0));
             ofDrawBitmapString(cities[i].text, worldPoint + ofVec3f(20, -20, 0));
-//            ofDrawBitmapString(cities[i].country, worldPoint );
-        // drawしたときに球体の右半分は良いけど、左半分のときに、画像のwidth分引いてあげないとちゃんとひょうじされない。
-        // つまに緯度経度によって
+            
             userPic[i].draw(worldPoint.x * 1.2, worldPoint.y * 1.2, worldPoint.z * 1.2, userPic[i].width, userPic[i].height);
         }
     }

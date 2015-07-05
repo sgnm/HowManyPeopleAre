@@ -6,28 +6,44 @@
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>FF3D2AD3-3849-4F00-B67E-58C853CE8CB8</string>
+	<key>IDESourceControlProjectName</key>
+	<string>LIT_final</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>5DB7C332A3A89035E93556A2A38BF414005BA671</key>
 		<string>https://github.com/jefftimesten/ofxJSON.git</string>
+		<key>7D150F3E9F1524604BDECB7EB4801453E73EC8E5</key>
+		<string>https://github.com/sgnm/HowManyPeopleAre.git</string>
 		<key>DAA1C1387EE9783D8A2400EEA68C06B845554301</key>
 		<string>https://github.com/saebashi/ofxRollingCam.git</string>
 	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>LIT_final.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>5DB7C332A3A89035E93556A2A38BF414005BA671</key>
-		<string>ofxJSON/</string>
+		<string>../../../../../addons/ofxJSON</string>
+		<key>7D150F3E9F1524604BDECB7EB4801453E73EC8E5</key>
+		<string>../..</string>
 		<key>DAA1C1387EE9783D8A2400EEA68C06B845554301</key>
-		<string>ofxRollingCam/</string>
+		<string>../../../../../addons/ofxRollingCam</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/jefftimesten/ofxJSON.git</string>
+	<string>https://github.com/sgnm/HowManyPeopleAre.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>5DB7C332A3A89035E93556A2A38BF414005BA671</string>
+	<string>7D150F3E9F1524604BDECB7EB4801453E73EC8E5</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7D150F3E9F1524604BDECB7EB4801453E73EC8E5</string>
+			<key>IDESourceControlWCCName</key>
+			<string>LIT_final</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

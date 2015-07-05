@@ -40,7 +40,11 @@ public:
     ofVec3f center;
     ofVec3f worldPoint;
     ofxJSONElement response;
-    int numloadpic = 0;
+    ofxRollingCam rollCam;
+    ofLight light;
+    ofCamera cam;
+    ofQuaternion latRot, longRot, spinQuat;
+    ofSoundPlayer bgm, pi, zoomIn, zoomOut, rotSound;
     
     int threshold;
     float rad = 0.0;
@@ -64,19 +68,8 @@ public:
     vector<ofImage> userPic;
     int k = 0;
     float lat, lon;
-
-    ofxRollingCam rollCam;
-    ofLight light;
-    
-    ofCamera cam;
-    
-    ofQuaternion latRot, longRot, spinQuat;
-    
     string str, oldStr, newStr;
-    
     int miniradius;
-    
-    ofSoundPlayer bgm, pi, zoomIn, zoomOut, rotSound;
     bool seven;
     
 };
