@@ -42,6 +42,7 @@ public:
     ofxJSONElement response;
     ofxRollingCam rollCam;
     ofLight light;
+    bool bLight = false;
     ofCamera cam;
     ofQuaternion latRot, longRot, spinQuat;
     ofSoundPlayer bgm, pi, zoomIn, zoomOut, rotSound;

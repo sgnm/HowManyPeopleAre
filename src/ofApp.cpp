@@ -46,13 +46,15 @@ void ofApp::setup(){
     light.setup();
     ofEnableLighting(); //Lightが使えてかっこいいけど見にくいリリースの時だけ実行する
     light.setPosition(0, 300, 0);
-    light.draw();
-    light.enable();
+//    light.draw();
+//    light.enable();
     
     cam.setPosition(0, 0, 450);
+    cam.lookAt(ofVec3f(0, 0, 0));
     
-    bgm.loadSound("bgm.mp3");
+    bgm.loadSound("noise.wav");
     bgm.play();
+    bgm.setLoop(true);
     
     // 効果音読み込み
     pi.loadSound("pi.mp3");
@@ -131,14 +133,14 @@ void ofApp::draw(){
         
         // ツイートがあるたびに、音を鳴らす。30.0fは演出の為。
         if(ofGetElapsedTimef() > 30.0f){
-            pi.setVolume(0.1f);
+            pi.setVolume(0.3f);
             pi.play();
         }
     }
     
     ofSetColor(255);
     for(unsigned int i = 0; i < cities.size(); i++){
-        if(ofGetElapsedTimef() > 22.2f){
+//        if(ofGetElapsedTimef() > 10.2f){
             // 位置情報offの時の処理
             if(ofToString(cities[i].latitude) == "0"){
                 cities[i].latitude = ofRandom(0, 360);
@@ -164,12 +166,15 @@ void ofApp::draw(){
             ofDrawBitmapString(cities[i].text, worldPoint + ofVec3f(20, -20, 0));
             
             userPic[i].draw(worldPoint.x * 1.2, worldPoint.y * 1.2, worldPoint.z * 1.2, userPic[i].width, userPic[i].height);
-        }
+//        }
     }
     
     rollCam.end();  //rollCam end
     cam.end();
     
+    ofRect(0, 0, 200, 40);
+    ofSetColor(255);
+    ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()), 20, 20);
 }
 
 //--------------------------------------------------------------
@@ -212,13 +217,41 @@ void ofApp::keyPressed(int key){
         }
     }
     if (key == '7'){
+        // デフォルトに戻す
         rollCam.setScale(0.7);
+        rollCam.setPos(0, 0, 0);
+        cam.setPosition(0, 0, 450);
+        cam.lookAt(ofVec3f(0, 0 ,0));
         zoomOut.setVolume(0.3f);
         zoomOut.play();
         seven = true;
     }
     if (key == 'f'){
         ofToggleFullscreen();
+    }
+    if (key == '8'){
+        rollCam.setPos(0, 0, 0);
+        cam.lookAt(ofVec3f(0, 0, 0));
+    }
+    if (key == '9'){
+        cam.setPosition(worldPoint * 1.5f);
+        cam.lookAt(worldPoint);
+    }
+    if (key == '0'){
+        rollCam.setPos(worldPoint.x, worldPoint.y, worldPoint.z);
+        cout << "x: " << worldPoint.x << " y: " << worldPoint.y << " z: " << worldPoint.z << endl;
+    }
+    if (key == 'l') {
+        bLight = !bLight;
+        if (bLight) {
+            ofEnableLighting();
+            light.enable();
+            light.draw();
+        }else{
+            ofDisableLighting();
+            light.destroy();
+            light.disable();
+        }
     }
 }
 

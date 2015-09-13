@@ -22,11 +22,11 @@
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>5DB7C332A3A89035E93556A2A38BF414005BA671</key>
-		<string>../../../../../addons/ofxJSON</string>
+		<string>../../../addons/ofxJSON</string>
 		<key>7D150F3E9F1524604BDECB7EB4801453E73EC8E5</key>
 		<string>../..</string>
 		<key>DAA1C1387EE9783D8A2400EEA68C06B845554301</key>
-		<string>../../../../../addons/ofxRollingCam</string>
+		<string>../../../addons/ofxRollingCam</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/sgnm/HowManyPeopleAre.git</string>
