@@ -62,28 +62,6 @@ void ofApp::setup(){
     zoomOut.loadSound("zoomOut.mp3");
     rotSound.loadSound("rotate.mp3");
     
-}
-
-//--------------------------------------------------------------
-void ofApp::update(){
-    mesh.clearVertices();
-    
-    // jsonデータ取得
-    response.open("/Users/Shin/Desktop/stream.json");
-    response.getRawString();
-    
-    rollCam.update();   //rollCam's rotate update.
-    
-    oldStr = newStr;
-    ifstream ifs("/Users/Shin/Desktop/stream.json");
-    while (getline(ifs, str)){
-        // 次にdraw()が呼ばれたときに、oldStrとの差分を比較するため、読み込んだjsonをnewStrに格納
-        newStr = str;
-    }
-}
-
-//--------------------------------------------------------------
-void ofApp::draw(){
     for(int i = 0; i < 1; i++){
         for(int x = 0; x < w; x+=1){
             for(int y = 0; y < h; y+=1){
@@ -103,6 +81,46 @@ void ofApp::draw(){
             }
         }
     }
+}
+
+//--------------------------------------------------------------
+void ofApp::update(){
+    
+    // jsonデータ取得
+    response.open("/Users/Shin/Desktop/stream.json");
+    response.getRawString();
+    
+    rollCam.update();   //rollCam's rotate update.
+    
+    oldStr = newStr;
+    ifstream ifs("/Users/Shin/Desktop/stream.json");
+    while (getline(ifs, str)){
+        // 次にdraw()が呼ばれたときに、oldStrとの差分を比較するため、読み込んだjsonをnewStrに格納
+        newStr = str;
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::draw(){
+//    for(int i = 0; i < 1; i++){
+//        for(int x = 0; x < w; x+=1){
+//            for(int y = 0; y < h; y+=1){
+//                ofPushMatrix();
+//                
+//                // xy座標を極座標変換してあげてる
+//                ofTranslate(ofGetWidth()/2, ofGetHeight()/2);
+//                float theta = (float)y * M_PI / h;
+//                float phi = -(float)x * 2.0f * M_PI / w;
+//                float px = radius * sin(theta) * cos(phi);
+//                float py = radius * sin(theta) * sin(phi);
+//                float pz = radius * cos(theta);
+//                ofVec3f pos(px, py, pz);
+//                mesh.addVertex(pos);
+//                
+//                ofPopMatrix();
+//            }
+//        }
+//    }
     
     cam.begin();
     // 向きの調整&回転させてる
@@ -111,11 +129,13 @@ void ofApp::draw(){
     ofPushMatrix();
     ofRotateX(-90);
     ofRotateZ(ofGetElapsedTimef()*5);
-    mesh.draw();
+    if (bDrawEarth) {
+        mesh.draw();
+    }
     ofPopMatrix();
     
 //    ofDrawBitmapString(ofToString(ofGetFrameRate(), 0), 20, 20);
-    
+                          
     // json内容比較して（更新されたら）、ツイートしたユーザの情報取得
     if (newStr.length() != oldStr.length()) {
         lon = response["place"]["bounding_box"]["coordinates"][0][0][0].asFloat();
@@ -132,7 +152,7 @@ void ofApp::draw(){
         cities.push_back( city );
         
         // ツイートがあるたびに、音を鳴らす。30.0fは演出の為。
-        if(ofGetElapsedTimef() > 30.0f){
+        if(ofGetElapsedTimef() > 10.0f){
             pi.setVolume(0.3f);
             pi.play();
         }
@@ -146,12 +166,17 @@ void ofApp::draw(){
                 cities[i].latitude = ofRandom(0, 360);
                 cities[i].longitude = ofRandom(0, 360);
             }
-            
+        
+            oldlatRot.makeRotate(cities[i-1].latitude, 1, 0, 0);
+            oldlongRot.makeRotate(cities[i-1].longitude, 0, 1, 0);
+            oldspinQuat.makeRotate(ofGetElapsedTimef(), 0, 1, 0);
+        
             latRot.makeRotate(cities[i].latitude, 1, 0, 0);
             longRot.makeRotate(cities[i].longitude, 0, 1, 0);
             spinQuat.makeRotate(ofGetElapsedTimef(), 0, 1, 0);
             
             ofVec3f center = ofVec3f(0,0,radius);
+            oldWorldPoint = oldlatRot * oldlongRot * oldspinQuat * center;
             worldPoint = latRot * longRot * spinQuat * center;
             
             miniradius = ofRandom(0, 10);
@@ -159,8 +184,13 @@ void ofApp::draw(){
             ofSetColor(255, ofRandom(0, 255));
             ofDrawSphere(worldPoint, miniradius);
             ofPopStyle();
-            ofLine(ofVec3f(0,0,0), worldPoint);
-            
+        
+            if (bModeLine) {
+                ofLine(ofVec3f(0,0,0), worldPoint);
+            }else{
+                ofLine(worldPoint, oldWorldPoint);
+            }
+        
             ofSetColor(255);
             ofDrawBitmapString(cities[i].user_name, worldPoint * 1.2 + ofVec3f(20, 0, 0));
             ofDrawBitmapString(cities[i].text, worldPoint + ofVec3f(20, -20, 0));
@@ -172,8 +202,6 @@ void ofApp::draw(){
     rollCam.end();  //rollCam end
     cam.end();
     
-    ofRect(0, 0, 200, 40);
-    ofSetColor(255);
     ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate()), 20, 20);
 }
 
@@ -252,6 +280,12 @@ void ofApp::keyPressed(int key){
             light.destroy();
             light.disable();
         }
+    }
+    if (key == 'd') {
+        bModeLine = !bModeLine;
+    }
+    if (key == 'e') {
+        bDrawEarth = !bDrawEarth;
     }
 }
 

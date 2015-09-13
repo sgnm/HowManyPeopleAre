@@ -44,6 +44,7 @@ public:
     ofLight light;
     bool bLight = false;
     ofCamera cam;
+    ofQuaternion oldlatRot, oldlongRot, oldspinQuat;
     ofQuaternion latRot, longRot, spinQuat;
     ofSoundPlayer bgm, pi, zoomIn, zoomOut, rotSound;
     
@@ -72,5 +73,10 @@ public:
     string str, oldStr, newStr;
     int miniradius;
     bool seven;
+    
+    ofVec3f oldWorldPoint;
+    bool bModeLine;
+    
+    bool bDrawEarth = true;
     
 };
